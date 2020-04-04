@@ -1,0 +1,103 @@
+---
+
+- name: sensorpush basic test 1
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    base_url: "https://api.sensorpush.com/api/v1"
+    auth_url: "{{ base_url }}/oauth/authorize"
+    token_url: "{{ base_url }}/oauth/accesstoken"
+    gateways_url: "{{ base_url }}/devices/gateways"
+    sensors_url: "{{ base_url }}/devices/sensors"
+    samples_url: "{{ base_url }}/samples"
+  vars_prompt:
+    - name: username
+      prompt: Username
+      private: no
+    - name: password
+      prompt: Password
+  tasks:
+    - name: Get Auth code
+      uri:
+        url: "{{ auth_url }}"
+        method: POST
+        body_format: json
+        body:
+          email: "{{ username }}"
+          password: "{{ password }}"
+        return_content: yes
+      register: auth_response
+
+    - name: Show Authorization
+      debug:
+        msg: "{{ auth_response.json[item] }}"
+        verbosity: 1
+      loop:
+        - "apikey"
+        - "authorization"
+
+    - name: Get Token
+      uri:
+        url: "{{ token_url }}"
+        method: POST
+        body_format: json
+        body:
+          authorization: "{{ auth_response.json.authorization }}"
+        return_content: yes
+      register: token_response
+
+    - name: Show Token
+      debug:
+        msg: "{{ token_response.json[item] }}"
+        verbosity: 1
+      loop:
+        - "accesstoken"
+
+    - name: Get Gateways
+      uri:
+        url: "{{ gateways_url }}"
+        method: POST
+        body_format: json
+        headers:
+          Authorization: "{{ token_response.json.accesstoken }}"
+        body: {}
+        return_content: yes
+      register: gateways_response
+
+    - name: Show Gateways
+      debug:
+        verbosity: 1
+        var: gateways_response.json
+
+    - name: Get Sensors
+      uri:
+        url: "{{ sensors_url }}"
+        method: POST
+        body_format: json
+        headers:
+          Authorization: "{{ token_response.json.accesstoken }}"
+        body: {}
+        return_content: yes
+      register: sensors_response
+
+    - name: Show Sensors
+      debug:
+        verbosity: 1
+        var: sensors_response.json
+
+    - name: Get Samples
+      uri:
+        url: "{{ samples_url }}"
+        method: POST
+        body_format: json
+        headers:
+          Authorization: "{{ token_response.json.accesstoken }}"
+        body:
+          limit: 1
+        return_content: yes
+      register: samples_response
+
+    - name: Show Samples
+      debug:
+        var: samples_response.json
