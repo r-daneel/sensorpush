@@ -18,7 +18,7 @@ ansible-playbook sensorpush_basic_test_1.yaml
 
 If you search for something less interactive, use this:
 ```
-ansible-playbook sensorpush_basic_test_1.yaml -e "username=<account_e-mail> password=<account_password>"
+ansible-playbook sensorpush_basic_test_1.yaml -e 'username=<account_e-mail>' -e 'password=<account_password>'
 ```
 or write that information into your inventory.
 
