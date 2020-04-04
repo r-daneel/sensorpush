@@ -26,6 +26,6 @@ or write that information into your inventory.
 
 The sensors can be used with the App, no strings attached. That was the main feature that made me buy them!\
 In order to manage multiple sensors without your phone/tablet becoming the central collection point, you need the SensorPush Gateway.\
-With the Gateway, sensor data is pushed to sensorpush.com.
+With the Gateway, sensor data is pushed to sensorpush.com.\
 Storage is then managed in the cloud infrastructure and can be checked from anywhere through the phone or the web portal.\
 The cloud service comes at no charge (at least as of now).
